@@ -1,0 +1,48 @@
+create view view_installation_followups as
+SELECT
+    `inv_m`.`form_main_unique_id` AS `form_main_unique_id`,
+    `inv_m`.`po_unique_id` AS `po_unique_id`,
+    `inv_m`.`po_num` AS `po_num`,
+    `inv_m`.`po_date` AS `po_date`,
+    `inv_m`.`consignee_unique_id` AS `consignee_unique_id`,
+    `inv_m`.`invoice_auto_id` AS `invoice_auto_id`,
+    `inv_m`.`invoice_no` AS `invoice_no`,
+    `inv_m`.`invoice_date` AS `invoice_date`,
+    `inv_m`.`installation_status` AS `installation_status`,
+    `inv_m`.`dc_ir_dispatch_sts` AS `dc_ir_dispatch_sts`,
+    `con_sub`.`con_address` AS `con_address`,
+    `con_sub`.`con_pincode` AS `con_pincode`,
+    `con_sub`.`con_contact_name` AS `con_contact_name`,
+    `inv_sub`.`dc_file_name` AS `dc_file_name`,
+    `inv_sub`.`ir_file_name` AS `ir_file_name`,
+    `inv_sub`.`file_invoice` AS `file_invoice`,
+    `aed_elcot`.`po_form`.`file_name` AS `po_file_name`,
+    `aed_elcot`.`po_form`.`file_org_name` AS `po_file_org_name`,
+    IFNULL(
+        `aed_elcot`.`po_form`.`ins_reqired`,
+        0
+    ) AS `ins_reqired`
+FROM
+    (
+        (
+            (
+                `aed_elcot`.`invoice_creation_main` `inv_m`
+            JOIN `aed_elcot`.`consignee_details_sub` `con_sub`
+            ON
+                (
+                    `con_sub`.`unique_id` = `inv_m`.`consignee_unique_id`
+                )
+            )
+        JOIN `aed_elcot`.`invoice_sublist` `inv_sub`
+        ON
+            (
+                `inv_sub`.`invoice_id` = `inv_m`.`unique_id`
+            )
+        )
+    JOIN `aed_elcot`.`po_form` ON
+        (
+            `aed_elcot`.`po_form`.`unique_id` = `inv_m`.`form_main_unique_id`
+        )
+    )
+WHERE
+    `inv_m`.`is_delete` = '0' AND `inv_m`.`invoice_no` <> '' AND `inv_sub`.`is_delete` = '0' AND `aed_elcot`.`po_form`.`ins_reqired` = 'on'

@@ -1,0 +1,42 @@
+Create view view_doc_approval_list1 as 
+SELECT
+    `inv`.`po_num` AS `po_num`,
+    `inv`.`po_date` AS `po_date`,
+    `inv`.`consignee_unique_id` AS `consignee_unique_id`,
+    `inv`.`unique_id` AS `invoice_unique_id`,
+    `inv`.`form_main_unique_id` AS `form_main_unique_id`,
+    `inv`.`executive_name` AS `executive_name`,
+    `inv`.`invoice_no` AS `invoice_no`,
+    `inv`.`invoice_date` AS `invoice_date`,
+    `inv`.`dispatch_status` AS `dispatch_status`,
+    `inv`.`doc_approval_sts` AS `doc_approval_sts`,
+    `inv`.`approved_by` AS `approved_by`,
+    `inv`.`ac_team_verifiy_status` AS `ac_team_verifiy_status`,
+    `inv`.`ac_team_approved_by` AS `ac_team_approved_by`,
+    `inv`.`approved_date` AS `approved_date`,
+    `inv`.`is_delete` AS `is_delete`,
+    `sub`.`dc_file_name` AS `dc_file_name`,
+    `sub`.`file_org_name` AS `file_org_name`,
+    `sub`.`file_invoice` AS `file_invoice`,
+    `sub`.`invoice_file_org_name` AS `invoice_file_org_name`,
+    `sub`.`ir_file_name` AS `ir_file_name`,
+    `sub`.`ir_file_org_name` AS `ir_file_org_name`,
+    `sub`.`is_delete` AS `is_delete_sub`,
+    `con_sub`.`con_contact_name` AS `con_contact_name`,
+    `con_sub`.`con_address` AS `con_address`
+FROM
+    (
+        (
+            `aed_elcot`.`invoice_creation_main` `inv`
+        JOIN `aed_elcot`.`invoice_sublist` `sub`
+        ON
+            (`inv`.`unique_id` = `sub`.`invoice_id`)
+        )
+    JOIN `aed_elcot`.`consignee_details_sub` `con_sub`
+    ON
+        (
+            `con_sub`.`unique_id` = `inv`.`consignee_unique_id`
+        )
+    )
+WHERE
+    `inv`.`is_delete` = 0 AND `inv`.`is_active` = 1 AND `sub`.`is_delete` = 0

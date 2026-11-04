@@ -1,0 +1,14 @@
+Create view view_doc_approval_list2 as 
+SELECT
+    `inv`.`form_main_unique_id` AS `form_main_unique_id`,
+    `inv`.`po_unique_id` AS `po_unique_id`,
+    `aed_elcot`.`po_form`.`file_name` AS `file_name`,
+    `aed_elcot`.`po_form`.`file_org_name` AS `file_org_name`
+FROM
+    (
+        `aed_elcot`.`invoice_creation_main` `inv`
+    JOIN `aed_elcot`.`po_form` ON
+        (
+            `aed_elcot`.`po_form`.`unique_id` = `inv`.`form_main_unique_id`
+        )
+    )

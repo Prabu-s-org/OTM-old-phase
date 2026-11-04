@@ -1,0 +1,23 @@
+create view view_stock_position_processing as
+SELECT
+    `a`.`unique_id` AS `unique_id`,
+    `a`.`po_unique_id` AS `po_unique_id`,
+    `a`.`po_num` AS `po_num`,
+    `a`.`po_date` AS `po_date`,
+    `a`.`department` AS `department`,
+    `a`.`executive_name` AS `executive_name`,
+    `a`.`no_of_po` AS `no_of_po`,
+    `a`.`no_of_consignee` AS `no_of_consignee`,
+    `a`.`status` AS `status`,
+    `a`.`stock_qty` AS `stock_qty`,
+    `a`.`product` AS `product`,
+    `a`.`product_unique_id` AS `product_unique_id`,
+    `b`.`stock_id` AS `stock_id`,
+    `b`.`stock_date` AS `stock_date`
+FROM
+    (
+        `aed_elcot`.`view_stock_position_pro_sub` `a`
+    JOIN `aed_elcot`.`view_stock_position_pro_sub1` `b`
+    ON
+        (`a`.`unique_id` = `b`.`unique_id`)
+    )

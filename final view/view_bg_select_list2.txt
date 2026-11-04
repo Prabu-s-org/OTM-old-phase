@@ -1,0 +1,28 @@
+create view view_bg_select_list2 as
+SELECT
+    `inv_main`.`form_main_unique_id` AS `form_main_unique_id`,
+    `inv_main`.`consignee_unique_id` AS `consignee_unique_id`,
+    `con_details`.`con_contact_name` AS `con_contact_name`,
+    `con_details`.`con_address` AS `con_address`,
+    `con_details`.`con_contact_number` AS `con_contact_number`,
+    `sign_doc_details`.`po_product_name` AS `po_product_name`,
+    `sign_doc_details`.`status_app` AS `status_app`,
+    `sign_doc_details`.`with_bg` AS `with_bg`
+FROM
+    (
+        (
+            `aed_elcot`.`invoice_creation_main` `inv_main`
+        JOIN `aed_elcot`.`sign_doc_verification_detail` `sign_doc_details`
+        ON
+            (
+                `sign_doc_details`.`form_main_unique_id` = `inv_main`.`form_main_unique_id` AND `sign_doc_details`.`con_unique_id` = `inv_main`.`consignee_unique_id`
+            )
+        )
+    JOIN `aed_elcot`.`consignee_details_sub` `con_details`
+    ON
+        (
+            `con_details`.`unique_id` = `sign_doc_details`.`con_unique_id`
+        )
+    )
+WHERE
+    `sign_doc_details`.`status_app` = '2' AND `sign_doc_details`.`with_bg` = 'on'

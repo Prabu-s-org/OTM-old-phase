@@ -1,0 +1,34 @@
+Create view view_po_product_deatail as 
+SELECT
+    `aed_elcot`.`po_form`.`unique_id` AS `main_unique_id`,
+    `aed_elcot`.`po_form`.`po_unique_id` AS `po_unique_id`,
+    `aed_elcot`.`product_details_sub`.`unique_id` AS `product_unique_id`,
+    `aed_elcot`.`product_details_sub`.`item_code` AS `item_code`,
+    `aed_elcot`.`product_details_sub`.`product` AS `product_name`,
+    `aed_elcot`.`product_details_sub`.`qty` AS `qty`,
+    `aed_elcot`.`product_details_sub`.`unit_price` AS `unit_price`,
+    `aed_elcot`.`product_details_sub`.`tax` AS `tax`,
+    `aed_elcot`.`consignee_details_sub`.`unique_id` AS `con_unique_id`,
+    `aed_elcot`.`po_product_assign_details`.`assign_qty` AS `assign_qty`
+FROM
+    (
+        (
+            (
+                `aed_elcot`.`po_form`
+            JOIN `aed_elcot`.`product_details_sub` ON
+                (
+                    `aed_elcot`.`po_form`.`unique_id` = `aed_elcot`.`product_details_sub`.`form_main_unique_id`
+                )
+            )
+        JOIN `aed_elcot`.`consignee_details_sub` ON
+            (
+                `aed_elcot`.`po_form`.`unique_id` = `aed_elcot`.`consignee_details_sub`.`form_main_unique_id`
+            )
+        )
+    JOIN `aed_elcot`.`po_product_assign_details` ON
+        (
+            `aed_elcot`.`consignee_details_sub`.`unique_id` = `aed_elcot`.`po_product_assign_details`.`con_unique_id` AND `aed_elcot`.`product_details_sub`.`unique_id` = `aed_elcot`.`po_product_assign_details`.`product_unique_id`
+        )
+    )
+WHERE
+    `aed_elcot`.`po_form`.`is_delete` = 0

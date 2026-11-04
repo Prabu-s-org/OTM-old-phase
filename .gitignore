@@ -1,0 +1,43 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Logs
+*.log
+error_log
+
+# Uploaded documents and user data (all directories)
+uploads/
+uploads1/
+test_sample_pod
+
+# Temporary and backup files
+*.tmp
+*.temp
+*.bak
+*.old
+*.swp
+*.save
+
+# Dependencies
+vendor/
+node_modules/
+
+# IDE files
+.vscode/
+.idea/
+*.code-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Runtime directories
+cache/
+temp/

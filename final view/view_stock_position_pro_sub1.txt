@@ -1,0 +1,19 @@
+create view view_stock_position_pro_sub1 as 
+SELECT
+    `a`.`unique_id` AS `unique_id`,
+    `a`.`po_num` AS `po_num`,
+    `b`.`stock_id` AS `stock_id`,
+    `b`.`stock_date` AS `stock_date`
+FROM
+    (
+        `aed_elcot`.`po_form` `a`
+    JOIN `aed_elcot`.`stock_position` `b`
+    ON
+        (
+            `a`.`unique_id` = `b`.`form_main_unique_id`
+        )
+    )
+WHERE
+    `a`.`is_delete` = 0 AND `b`.`is_delete` = 0
+GROUP BY
+    `a`.`unique_id`

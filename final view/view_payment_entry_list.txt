@@ -1,0 +1,27 @@
+ create view view_payment_entry_list as
+SELECT
+    `bill_main`.`bill_form_main_unique_id` AS `bill_form_main_unique_id`,
+    `bill_main`.`po_num` AS `po_num`,
+    `bill_main`.`po_date` AS `po_date`,
+    `bill_main`.`invoice_no` AS `invoice_no`,
+    `bill_main`.`invoice_date` AS `invoice_date`,
+    `bill_main`.`invoice_value` AS `invoice_value`,
+    `bill_main`.`bill_submission_date` AS `bill_submission_date`,
+    `bill_main`.`e_no` AS `e_no`,
+    `bill_main`.`payement_receive` AS `payement_receive`,
+    `bill_main`.`payment_status` AS `payment_status`,
+    `bill_main`.`payment_date` AS `payment_date`,
+    `bill_main`.`consignee_unique_id` AS `consignee_unique_id`,
+    `bill_main`.`con_contact_name` AS `con_contact_name`,
+    `bill_main`.`con_address` AS `con_address`,
+    `bill_main`.`bill_no` AS `bill_no`,
+    `aed_elcot`.`po_form`.`ld_per_day` AS `ld_per_day`,
+    `aed_elcot`.`po_form`.`ld_maximum_val` AS `ld_maximum_val`
+FROM
+    (
+        `aed_elcot`.`bill_submission_main_table` `bill_main`
+    JOIN `aed_elcot`.`po_form` ON
+        (
+            `bill_main`.`bill_form_main_unique_id` = `aed_elcot`.`po_form`.`unique_id`
+        )
+    )

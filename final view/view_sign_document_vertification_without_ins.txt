@@ -1,0 +1,33 @@
+create view view_sign_document_vertification_without_ins as
+SELECT
+    `dispatch_list`.`po_num` AS `po_num`,
+    `dispatch_list`.`po_date` AS `po_date`,
+    `dispatch_list`.`con_contact_name` AS `con_contact_name`,
+    `dispatch_list`.`con_address` AS `con_address`,
+    `dispatch_list`.`invoice_no` AS `invoice_no`,
+    `dispatch_list`.`invoice_date` AS `invoice_date`,
+    `dispatch_list`.`unique_id` AS `form_main_unique_id`,
+    `dispatch_list`.`con_unique_id` AS `con_unique_id`,
+    IFNULL(`aed_elcot`.`po_form`.`file_name`, 0) AS `po_file`,
+    IFNULL(
+        `aed_elcot`.`po_form`.`file_org_name`,
+        0
+    ) AS `po_file_org_name`,
+    IFNULL(
+        `aed_elcot`.`po_form`.`ins_reqired`,
+        0
+    ) AS `ins_reqired`,
+    IFNULL(
+        `aed_elcot`.`po_form`.`bank_required`,
+        0
+    ) AS `bank_required`
+FROM
+    (
+        `aed_elcot`.`view_dispatch_list_final` `dispatch_list`
+    JOIN `aed_elcot`.`po_form` ON
+        (
+            `dispatch_list`.`unique_id` = `aed_elcot`.`po_form`.`unique_id`
+        )
+    )
+WHERE
+    `aed_elcot`.`po_form`.`ins_reqired` = 'off'

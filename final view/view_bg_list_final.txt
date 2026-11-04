@@ -1,0 +1,42 @@
+create view view_bg_list_final as
+SELECT
+    `bg_select1`.`po_num` AS `po_num`,
+    `bg_select1`.`po_unique_id` AS `po_unique_id`,
+    `bg_select1`.`form_main_unique_id` AS `form_main_unique_id`,
+    `bg_select1`.`po_date` AS `po_date`,
+    `bg_select1`.`invoice_no` AS `invoice_no`,
+    `bg_select1`.`invoice_date` AS `invoice_date`,
+    `bg_select1`.`ledger_name` AS `ledger_name`,
+    `bg_select1`.`invoice_auto_id` AS `invoice_auto_id`,
+    `bg_select1`.`executive_name` AS `executive_name`,
+    `bg_select1`.`consignee_unique_id` AS `consignee_unique_id`,
+    `bg_select1`.`invoice_qty` AS `invoice_qty`,
+    `bg_select1`.`invoice_value` AS `invoice_value`,
+    `bg_select1`.`bank_required` AS `bank_required`,
+    `bg_select1`.`bg_percentage` AS `bg_percentage`,
+    `bg_select1`.`bg_month` AS `bg_month`,
+    `bg_select1`.`bg_status` AS `bg_status`,
+    `bg_select2`.`con_contact_name` AS `con_contact_name`,
+    `bg_select2`.`con_address` AS `con_address`,
+    `bg_select2`.`con_contact_number` AS `con_contact_number`,
+    `bg_select2`.`po_product_name` AS `po_product_name`,
+    `bg_select2`.`with_bg` AS `with_bg`,
+    `sign_doc`.`status_app` AS `status_app`
+FROM
+    (
+        (
+            `aed_elcot`.`view_bg_select_list1` `bg_select1`
+        JOIN `aed_elcot`.`view_bg_select_list2` `bg_select2`
+        ON
+            (
+                `bg_select2`.`form_main_unique_id` = `bg_select1`.`form_main_unique_id` AND `bg_select2`.`consignee_unique_id` = `bg_select1`.`consignee_unique_id`
+            )
+        )
+    JOIN `aed_elcot`.`sign_doc_verification_detail` `sign_doc`
+    ON
+        (
+            `sign_doc`.`form_main_unique_id` = `bg_select2`.`form_main_unique_id` AND `sign_doc`.`con_unique_id` = `bg_select2`.`consignee_unique_id`
+        )
+    )
+GROUP BY
+    `bg_select1`.`invoice_no`

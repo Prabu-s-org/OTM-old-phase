@@ -1,0 +1,45 @@
+SELECT
+    `ins_follow`.`po_num` AS `po_num`,
+    `ins_follow`.`po_date` AS `po_date`,
+    `ins_follow`.`con_contact_name` AS `con_contact_name`,
+    `ins_follow`.`con_address` AS `con_address`,
+    `ins_follow`.`invoice_no` AS `invoice_no`,
+    `ins_follow`.`invoice_date` AS `invoice_date`,
+    `ins_follow`.`form_main_unique_id` AS `form_main_unique_id`,
+    `ins_follow`.`consignee_unique_id` AS `consignee_unique_id`,
+    `ins_det`.`document_verification_status` AS `document_verification_status`,
+    `ins_det`.`dc_delivery_status` AS `dc_delivery_status`,
+    `ins_det`.`documents_type` AS `dc_status`,
+    `ins_det`.`documents_type1` AS `ir_status`,
+    `ins_det`.`documents_type2` AS `snr_status`,
+    `ins_det`.`dc_file` AS `dc_file`,
+    `ins_det`.`dc_original_name` AS `dc_original_name`,
+    `ins_det`.`ir_file` AS `ir_file`,
+    `ins_det`.`ir_original_name` AS `ir_original_name`,
+    `ins_det`.`snr_file` AS `snr_file`,
+    `ins_det`.`snr_original_name` AS `snr_original_name`,
+    `aed_elcot`.`po_form`.`file_name` AS `po_file`,
+    `aed_elcot`.`po_form`.`file_org_name` AS `po_file_org_name`,
+    IFNULL(
+        `aed_elcot`.`po_form`.`ins_reqired`,
+        0
+    ) AS `ins_reqired`,
+    IFNULL(
+        `aed_elcot`.`po_form`.`bank_required`,
+        0
+    ) AS `bank_required`
+FROM
+    (
+        (
+            `aed_elcot`.`view_installation_followups` `ins_follow`
+        JOIN `aed_elcot`.`installation_details` `ins_det`
+        ON
+            (
+                `ins_follow`.`form_main_unique_id` = `ins_det`.`po_form_unique_id` AND `ins_follow`.`consignee_unique_id` = `ins_det`.`consignee_unique_id`
+            )
+        )
+    JOIN `aed_elcot`.`po_form` ON
+        (
+            `ins_follow`.`form_main_unique_id` = `aed_elcot`.`po_form`.`unique_id`
+        )
+    )

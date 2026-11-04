@@ -1,0 +1,50 @@
+create view view_elcot_entry_final as
+SELECT
+    `with_bg`.`form_main_unique_id` AS `unique_id`,
+    `with_bg`.`po_num` AS `po_num`,
+    `with_bg`.`po_date` AS `po_date`,
+    `with_bg`.`invoice_no` AS `invoice_no`,
+    `with_bg`.`invoice_date` AS `invoice_date`,
+    `with_bg`.`invoice_qty` AS `invoice_qty`,
+    `with_bg`.`invoice_value` AS `invoice_value`,
+    `with_bg`.`bill_status` AS `bill_status`,
+    `with_bg`.`bg_num` AS `bg_num`,
+    `with_bg`.`bg_auto_id` AS `bg_auto_id`,
+    `with_bg`.`bg_date` AS `bg_date`,
+    `with_bg`.`bg_value` AS `bg_value`,
+    `with_bg`.`claim_amount` AS `claim_amount`,
+    `with_bg`.`file_name` AS `file_name`,
+    `with_bg`.`file_org_name` AS `file_org_name`,
+    NULL AS `con_contact_name`,
+    NULL AS `con_address`,
+    NULL AS `consignee_unique_id`,
+    NULL AS `ins_reqired`,
+    NULL AS `bank_required`,
+    `with_bg`.`proceed_bg` AS `proceed_bg`
+FROM
+    `aed_elcot`.`view_bill_submission_with_bg` `with_bg`
+UNION ALL
+SELECT
+    `without_bg`.`form_main_unique_id` AS `unique_id`,
+    `without_bg`.`po_num` AS `po_num`,
+    `without_bg`.`po_date` AS `po_date`,
+    `without_bg`.`invoice_no` AS `invoice_no`,
+    `without_bg`.`invoice_date` AS `invoice_date`,
+    `without_bg`.`invoice_qty` AS `invoice_qty`,
+    `without_bg`.`invoice_value` AS `invoice_value`,
+    `without_bg`.`bill_status` AS `bill_status`,
+    NULL AS `bg_num`,
+    NULL AS `bg_auto_id`,
+    NULL AS `bg_date`,
+    NULL AS `bg_value`,
+    `without_bg`.`claim_amount` AS `claim_amount`,
+    `without_bg`.`file_name` AS `file_name`,
+    `without_bg`.`file_org_name` AS `file_org_name`,
+    `without_bg`.`con_contact_name` AS `con_contact_name`,
+    `without_bg`.`con_address` AS `con_address`,
+    `without_bg`.`consignee_unique_id` AS `consignee_unique_id`,
+    `without_bg`.`ins_reqired` AS `ins_reqired`,
+    `without_bg`.`bank_required` AS `bank_required`,
+    `without_bg`.`proceed_bg` AS `proceed_bg`
+FROM
+    `aed_elcot`.`view_bill_submission_without_bg` `without_bg`

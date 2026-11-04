@@ -1,0 +1,42 @@
+Create view view_product_assign_con_details as 
+SELECT
+    `con_sub`.`form_main_unique_id` AS `form_main_unique_id`,
+    `con_sub`.`unique_id` AS `con_unique_id`,
+    `con_sub`.`con_address` AS `con_address`,
+    `con_sub`.`con_district` AS `con_district`,
+    `con_sub`.`con_contact_name` AS `con_contact_name`,
+    `con_sub`.`con_contact_number` AS `con_contact_number`,
+    `con_sub`.`con_pincode` AS `con_pincode`,
+    `con_sub`.`no_of_consignee` AS `no_of_consignee`,
+    `po_assign`.`unit_price` AS `unit_price`,
+    `po_assign`.`product_unique_id` AS `product_unique_id`,
+    `po_assign`.`item_code` AS `item_code`,
+    `po_assign`.`product` AS `product`,
+    `po_assign`.`qty` AS `qty`,
+    `stk_po`.`no_of_item` AS `no_of_item`,
+    `stk_po`.`executive_name` AS `executive_name`,
+    `stk_po`.`po_num` AS `po_num`,
+    `stk_po`.`po_date` AS `po_date`,
+    `stk_po`.`po_unique_id` AS `po_unique_id`,
+    `stk_po`.`stock_id` AS `stock_id`,
+    `stk_po`.`stock_date` AS `stock_date`,
+    `stk_po`.`stock_qty` AS `stock_qty`,
+    `stk_po`.`billed_qty` AS `billed_qty`,
+    `po_assign`.`assign_qty` AS `assign_qty`,
+    `po_assign`.`status` AS `status`
+FROM
+    (
+        (
+            `aed_elcot`.`consignee_details_sub` `con_sub`
+        JOIN `aed_elcot`.`po_product_assign_details` `po_assign`
+        ON
+            (
+                `con_sub`.`form_main_unique_id` = `po_assign`.`form_main_unique_id` AND `con_sub`.`unique_id` = `po_assign`.`con_unique_id`
+            )
+        )
+    JOIN `aed_elcot`.`stock_position` `stk_po`
+    ON
+        (
+            `stk_po`.`form_main_unique_id` = `po_assign`.`form_main_unique_id` AND `stk_po`.`product_unique_id` = `po_assign`.`product_unique_id`
+        )
+    )

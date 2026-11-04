@@ -1,0 +1,22 @@
+Create view view_po_consignee_deatail as 
+SELECT
+    `aed_elcot`.`po_form`.`unique_id` AS `main_unique_id`,
+    `aed_elcot`.`po_form`.`po_unique_id` AS `po_unique_id`,
+    `aed_elcot`.`consignee_details_sub`.`unique_id` AS `con_unique_id`,
+    `aed_elcot`.`consignee_details_sub`.`con_address` AS `con_address`,
+    `aed_elcot`.`consignee_details_sub`.`con_district` AS `con_district`,
+    `aed_elcot`.`consignee_details_sub`.`con_pincode` AS `con_pincode`,
+    `aed_elcot`.`consignee_details_sub`.`con_contact_name` AS `con_contact_name`,
+    `aed_elcot`.`consignee_details_sub`.`con_contact_number` AS `con_contact_number`,
+    `aed_elcot`.`consignee_details_sub`.`con_lan_num` AS `con_lan_num`,
+    `aed_elcot`.`consignee_details_sub`.`is_delete` AS `is_delete`
+FROM
+    (
+        `aed_elcot`.`po_form`
+    JOIN `aed_elcot`.`consignee_details_sub` ON
+        (
+            `aed_elcot`.`po_form`.`unique_id` = `aed_elcot`.`consignee_details_sub`.`form_main_unique_id`
+        )
+    )
+WHERE
+    `aed_elcot`.`po_form`.`is_delete` = 0 AND `aed_elcot`.`po_form`.`is_active` = 1

@@ -1,0 +1,30 @@
+create view view_stock_position_list AS
+SELECT
+    `aed_elcot`.`po_form`.`unique_id` AS `unique_id`,
+    `aed_elcot`.`po_form`.`po_unique_id` AS `po_unique_id`,
+    `aed_elcot`.`po_form`.`po_num` AS `po_num`,
+    `aed_elcot`.`po_form`.`po_date` AS `po_date`,
+    `aed_elcot`.`po_form`.`department` AS `department`,
+    `aed_elcot`.`po_form`.`executive_name` AS `executive_name`,
+    `aed_elcot`.`po_form`.`no_of_po` AS `no_of_po`,
+    `aed_elcot`.`po_form`.`no_of_consignee` AS `no_of_consignee`,
+    `aed_elcot`.`po_form`.`status` AS `status`,
+    `aed_elcot`.`po_form`.`is_delete` AS `is_delete`,
+    SUM(
+        `aed_elcot`.`product_details_sub`.`qty`
+    ) AS `qty`,
+    SUM(
+        `aed_elcot`.`product_details_sub`.`net_value`
+    ) AS `net_value`
+FROM
+    (
+        `aed_elcot`.`po_form`
+    JOIN `aed_elcot`.`product_details_sub` ON
+        (
+            `aed_elcot`.`po_form`.`unique_id` = `aed_elcot`.`product_details_sub`.`form_main_unique_id`
+        )
+    )
+WHERE
+    `aed_elcot`.`po_form`.`is_delete` = '0' AND `aed_elcot`.`po_form`.`unique_id` <> ''
+GROUP BY
+    `aed_elcot`.`po_form`.`unique_id`

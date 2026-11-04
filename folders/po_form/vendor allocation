@@ -1,0 +1,80 @@
+ <div class="multisteps-form__panel" data-animation="slideVert" id="four-tab">
+                                <div class="inner pb-100">
+                                    <div class="wizard-content-form">
+                                        <div class="wizard-form-field">
+                                            <div class="tab">
+                                                <!-- <form class="was-validated" id="product_detail"> -->
+                                                     <!--<select name="vendor_name[]" id="vendor_name" class="form-control" required multiple>-->
+    <!--                                            <div class="row">-->
+    <!--                                                <div class="col-xl-3">-->
+    <!--        <div class="mb-3">-->
+    <!--            <label class="form-label">Vendor Names</label>-->
+            
+               
+    <!--            <select name="vendor_name[]" id="vendor_name"  class="selectpicker" multiple data-live-search="true" required >-->
+                   
+    <!--                <?php echo $vendor_name_options; ?>-->
+    <!--            </select>-->
+             
+    <!--        </div>-->
+                 
+      
+    <!--    </div>-->
+
+        <!-- State Selection -->
+    <!--    <div class="col-xl-3">-->
+    <!--        <div class="mb-3">-->
+    <!--            <label class="form-label">State</label>-->
+    <!--            <br>-->
+    <!--        <select name="vendor_state_name[]" id="vendor_state_name"  class="selectpicker" multiple data-live-search="true" required>-->
+    <!--                <?php echo $vendor_state_options;?>-->
+    <!--            </select>-->
+    <!--        </div>-->
+    <!--    </div>-->
+
+        <!-- District Selection -->
+    <!--    <div class="col-xl-3">-->
+    <!--        <div class="mb-3">-->
+    <!--            <label class="form-label">District</label>-->
+    <!--            <select  id="vendor_district" name="vendor_district[]"  class="selectpicker" multiple data-live-search="true" required>-->
+    <!--                <option value="">Select District</option>-->
+    <!--                <?php echo  $vendor_district_options; ?>-->
+    <!--            </select>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--                                                <div class="col-xl-3 ">-->
+    <!--                                                    <div class="mb-3">-->
+    <!--                                                        <label class="form-label">Zone</label>-->
+                                         
+                                                            <!--<input type="text" id="vendor_zone" name="vendor_zone" class="form-control"-->
+                                                                
+                                                            <!--     required>-->
+    <!--                                                         <input type="text" id="vendor_zone" name="vendor_zone" class="form-control" autocomplete="off" -->
+    <!--                                                        value=<?php echo $vendor_zone;?> > -->
+    <!--<div id="suggestions" class="suggestions"></div>-->
+                                                            <!-- onkeypress="return isNumber(event)" -->
+    <!--                                                    </div>-->
+    <!--                                                </div>-->
+    <!--                                                 <input type="hidden" name="stored_item" id="stored_item">-->
+    <!--                                                <input type="hidden" name="count_item" id="count_item">-->
+    <!--   <input type="hidden" id="po_code" name="po_code" class="form-control" value="" readonly>-->
+    <!--                                                <div class="col-xl-3 ">-->
+    <!--                                                    <div class="mb-3">-->
+                                                           
+    <!--                                                        <button type="button" id="pro_details"-->
+    <!--                                                            class="btn btn-success btn-label product_details_add_update_btn"-->
+    <!--                                                            onclick= "store_vendor_det()"><i-->
+    <!--                                                                class="lab la as la-plus-circle label-icon align-middle fs-16 me-2"></i>-->
+    <!--                                                            Submit</button>-->
+
+    <!--                                                    </div>-->
+    <!--                                                </div>
+                                               
+    <!--                                </div>-->
+
+                                   
+                                </div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>

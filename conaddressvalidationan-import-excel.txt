@@ -1,0 +1,146 @@
+<?php
+// Include DB file and Common Functions
+include '../../config/dbconfig.php';
+include 'simplexlsx.php'; 
+
+require_once("../../assets/PHPExcel-1.8/Classes/PHPExcel.php");
+
+try {
+    $conn = new PDO("mysql:host=localhost;dbname=operation_team_beta", "root", "");
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo $sql . "<br>" . $e->getMessage();
+}
+
+session_start();
+
+$no_of_consignee = $_POST['no_of_consignee'];
+$form_main_unique_id = $_POST['form_main_unique_id'];
+$cons_verify_sts = $_POST['cons_verfiy_sts'];
+$batch_id = $_POST['batch_id'];
+$po_number = $_POST['po_number'];
+$consignee_received_date = $_POST['consignee_received_date'];
+$batch_entry_date = date('Y-m-d');
+
+$allowedFileType = [
+    'application/vnd.ms-excel',
+    'text/xls',
+    'text/xlsx',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+];
+
+if (in_array($_FILES["file"]["type"], $allowedFileType)) {
+    $file_path = $_FILES['file']['tmp_name'];
+    $xlsx = new SimpleXLSX($file_path);
+    $rows = $xlsx->rows();
+    $uploaded_count = count($rows);
+
+    $check_existing = $conn->prepare('select COUNT(*) from consignee_details_sub where form_main_unique_id = ? and is_delete = 0');
+    $check_existing->execute([$form_main_unique_id]);
+
+    $exisiting_count = $check_existing->fetchColumn();
+    $total_after_upload = $exisiting_count + $uploaded_count;
+
+    // Validate invalid staff IDs and other conditions
+    $errors = [];
+    $missing_staff_ids = [];
+    foreach ($rows as $index => $fields) {
+        if ($index === 0) continue; // Skip header
+
+        if (count($fields) < 9) {
+            $errors[] = "Row " . ($index + 1) . " has incomplete data.";
+            continue;
+        }
+
+        $assign_team_member_raw = trim($fields[8]);
+        $staff_ids = array_map('trim', explode(',', $assign_team_member_raw));
+        $valid_staff_ids = [];
+        $invalid_staff_ids = [];
+
+        // Check each staff ID for validity
+        foreach ($staff_ids as $sid) {
+            $check_user = $conn->prepare("SELECT COUNT(*) FROM user WHERE staff_id = ? AND is_delete = 0");
+            $check_user->execute([$sid]);
+            if ($check_user->fetchColumn() == 0) {
+                $invalid_staff_ids[] = $sid; // Collect invalid staff IDs
+            } else {
+                $valid_staff_ids[] = $sid; // Collect valid staff IDs
+            }
+        }
+
+        if (!empty($invalid_staff_ids)) {
+            // If any invalid staff IDs are found, log the error
+            $missing_staff_ids = array_merge($missing_staff_ids, $invalid_staff_ids);
+            $errors[] = "Row " . ($index + 1) . " - Invalid Staff IDs: " . implode(", ", $invalid_staff_ids);
+            continue; // Skip this row if there are invalid staff IDs
+        }
+
+        // Check if consignee address already exists in the database
+        $con_address = $fields[0];
+        $existing_address_check = $conn->prepare("SELECT COUNT(*) FROM consignee_details_sub WHERE con_address = ? AND form_main_unique_id = ? AND is_delete = 0");
+        $existing_address_check->execute([$con_address, $form_main_unique_id]);
+        $address_count = $existing_address_check->fetchColumn();
+
+        if ($address_count > 0) {
+            $errors[] = "Row " . ($index + 1) . " - Consignee address '$con_address' already exists.";
+            continue; // Skip inserting this row if the address already exists
+        }
+
+        // Process the valid rows (after validation)
+        $unique_id = uniqid("con_");
+        $assign_team_member_str = implode(",", $valid_staff_ids); // Convert valid staff IDs to string
+
+        // Prepare insert query
+        $stmt = $conn->prepare("INSERT INTO consignee_details_sub(
+            con_address, con_district, con_pincode, zone,
+            con_contact_name, con_contact_number, con_lan_num, consignee_gst,
+            assign_team_member, unique_id, form_main_unique_id, no_of_consignee,
+            cons_verify_sts, batch_id, po_number, batch_entry_date, consignee_received_date
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+        // Prepare data for insertion
+        $con_address = $fields[0];
+        $con_pincode = $fields[2];
+        $zone = $fields[3];
+        $con_contact_name = $fields[4];
+        $con_contact_number = $fields[5];
+        $con_lan_num = $fields[6];
+        $consignee_gst = $fields[7];
+
+        // Execute the insert statement for each valid row
+        $stmt->execute([
+            $con_address,
+            $fields[1], // No need for district validation, use the district name directly
+            $con_pincode,
+            $zone,
+            $con_contact_name,
+            $con_contact_number,
+            $con_lan_num,
+            $consignee_gst,
+            $assign_team_member_str,
+            $unique_id,
+            $form_main_unique_id,
+            $no_of_consignee,
+            $cons_verify_sts,
+            $batch_id,
+            $po_number,
+            $consignee_received_date,
+            $batch_entry_date
+        ]);
+    }
+
+    if (!empty($errors)) {
+        // Output the validation errors
+        echo json_encode([
+            'status' => 'error',
+            'message' => implode("\n", $errors),
+            'missing_staff_ids' => array_unique($missing_staff_ids)
+        ]);
+        exit;
+    }
+
+    echo "<script>alert('Upload Successful')</script>";
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid file type. Please upload an Excel file.']);
+}
+?>

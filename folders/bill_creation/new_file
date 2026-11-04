@@ -1,0 +1,98 @@
+function po_invoice_create(){
+    alert('hi');
+    
+   var internet_status = is_online();
+
+		
+	    var bill_form_unique_id= document.getElementById('bill_form_unique_id').value;
+	    
+        var po_num= document.getElementById('po_num').value;
+        // alert(po_num);
+        var po_date = document.getElementById('po_date').value;
+        // alert(po_date);
+        var con_contact_name= document.getElementById('con_contact_name').value;
+        // alert(con_contact_name);
+        var con_address= document.getElementById('con_address').value;
+        // alert(con_address);
+        var invoice_no = document.getElementById('invoice_no').value;
+        // alert(invoice_no);
+        var consignee_unique_id = document.getElementById('consignee_unique_id').value;
+        // alert(consignee_unique_id);
+        var unique_id= document.getElementById('bill_main_unique_id').value;
+        // alert(unique_id);
+        var invoice_value= document.getElementById('invoice_value').value;
+        // alert(invoice_value);
+        var consignee_unique_id= document.getElementById('consignee_unique_id').value;
+         var invoice_qty= document.getElementById('invoice_qty').value;
+         
+        var checkbox_qty = document.getElementsByName('checkbox[]');
+        // alert(checkbox_qty);
+        var checkbox_qty_total = [];
+        var checkbox_qty_amt = [];
+        
+        for (var i = 0; i < checkbox_qty.length; i++){
+            var checkbox_qty_val = checkbox_qty.length;
+            
+            alert(checkbox_qty_val);
+            var invoice_qty= document.getElementsByName('invoice_qty[]');
+         
+            var invoice_value= document.getElementsByName('invoice_value[]');
+            
+             var invoice_value_val = invoice_value[i].value;
+            var invoice_qty_val = invoice_qty[i].value;
+            var mul = invoice_qty_val * invoice_value_val;
+            alert(mul);
+            
+         // amount of value calculate
+            var amount = parseFloat(mul);
+            if (!isNaN(amount)) {
+              checkbox_qty_amt.push(amount);
+              var sum_of_checkbox_value = checkbox_qty_amt.reduce(function (total, current) {
+                return total + current;
+              },0);
+              
+            } 
+
+            // total qty calculate
+            var number = parseFloat(invoice_qty);
+            if (!isNaN(number)) {
+              invoice_qty_total.push(number);
+              var sum_of_invoice_qty = invoice_qty_total.reduce(function (total, current) {
+                return total + current;
+              },0);
+              
+            } else {
+              alert('Please enter a valid number.');
+            }
+        }
+        
+        
+        var total_amount = sum_of_checkbox_value;
+        // alert(total_amount);
+
+        var data = "bill_form_unique_id=" +bill_form_unique_id + "&po_num=" + po_num + "&po_date=" + po_date + "&con_contact_name=" + con_contact_name  + "&con_address=" + con_address + "&invoice_no=" + invoice_no + "&consignee_unique_id=" + consignee_unique_id + "&invoice_value=" + total_amount + "&invoice_qty=" + sum_of_invoice_qty + "&checkbox_qty=" + checkbox_qty_val + "&unique_id=" + unique_id;
+
+        data += "&action=demo";
+    
+            var ajax_url = sessionStorage.getItem("folder_crud_link");
+				var url      = sessionStorage.getItem("list_link");
+
+        
+                $.ajax({
+                    type: "POST",
+                    url: ajax_url,
+                    data: data,
+                    beforeSend: function() {
+                        $(".po_delivery_add_update_btn").attr("disabled", "disabled");
+                        $(".po_delivery_add_update_btn").text("Loading...");
+                    },
+                    success: function(data) {
+                        // alert(data);
+                        // stock_creation_sub();
+                },
+                error: function(data) {
+                    alert("Network Error");
+                }
+            });
+   
+	}

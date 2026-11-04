@@ -1,0 +1,25 @@
+create view view_stock_position_pro_sub as
+SELECT
+    `a`.`unique_id` AS `unique_id`,
+    `a`.`po_unique_id` AS `po_unique_id`,
+    `a`.`po_num` AS `po_num`,
+    `a`.`po_date` AS `po_date`,
+    `a`.`department` AS `department`,
+    `a`.`executive_name` AS `executive_name`,
+    `a`.`no_of_po` AS `no_of_po`,
+    `a`.`no_of_consignee` AS `no_of_consignee`,
+    `a`.`status` AS `status`,
+    `b`.`stock_qty` AS `stock_qty`,
+    `b`.`product` AS `product`,
+    `b`.`product_unique_id` AS `product_unique_id`
+FROM
+    (
+        `aed_elcot`.`po_form` `a`
+    JOIN `aed_elcot`.`stock_position` `b`
+    ON
+        (
+            `a`.`unique_id` = `b`.`form_main_unique_id`
+        )
+    )
+WHERE
+    `a`.`is_delete` = 0 AND `b`.`is_delete` = 0

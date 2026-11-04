@@ -1,0 +1,34 @@
+create view view_elcot_list as
+SELECT
+    `bill`.`bill_no` AS `bill_no`,
+    `bill`.`bill_form_unique_id` AS `bill_form_unique_id`,
+    `bill`.`po_num` AS `po_num`,
+    `bill`.`invoice_no` AS `invoice_no`,
+    `bill`.`invoice_date` AS `invoice_date`,
+    `bill`.`invoice_qty` AS `invoice_qty`,
+    `bill`.`invoice_value` AS `invoice_value`,
+    `bill`.`bill_submission_date` AS `bill_submission_date`,
+    `bill`.`e_no` AS `e_no`,
+    `bill`.`bill_status` AS `bill_status`,
+    `bill`.`unique_id` AS `bill_unique_id`,
+    `bill`.`is_delete` AS `is_delete`,
+    `aed_elcot`.`bill_submission_form`.`installation_reference_no` AS `installation_reference_no`,
+    `aed_elcot`.`bill_submission_form`.`supplier_invoice_number` AS `supplier_invoice_number`,
+    `sign`.`claim_amount` AS `claim_amount`
+FROM
+    (
+        (
+            `aed_elcot`.`bill_submission_sub` `bill`
+        JOIN `aed_elcot`.`sign_doc_verification_detail` `sign`
+        ON
+            (
+                `bill`.`bill_form_unique_id` = `sign`.`form_main_unique_id` AND `bill`.`invoice_no` = `sign`.`invoice_no`
+            )
+        )
+    JOIN `aed_elcot`.`bill_submission_form` ON
+        (
+            `bill`.`bill_form_unique_id` = `aed_elcot`.`bill_submission_form`.`bill_form_main_unique_id`
+        )
+    )
+GROUP BY
+    `aed_elcot`.`bill_submission_form`.`installation_reference_no`

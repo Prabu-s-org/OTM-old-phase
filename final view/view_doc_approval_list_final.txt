@@ -1,0 +1,39 @@
+Create view view_doc_approval_list_final as 
+
+SELECT
+    `app_list1`.`po_num` AS `po_num`,
+    `app_list1`.`po_date` AS `po_date`,
+    `app_list1`.`consignee_unique_id` AS `consignee_unique_id`,
+    `app_list1`.`invoice_unique_id` AS `invoice_unique_id`,
+    `app_list1`.`executive_name` AS `executive_name`,
+    `app_list1`.`invoice_no` AS `invoice_no`,
+    `app_list1`.`invoice_date` AS `invoice_date`,
+    `app_list1`.`dispatch_status` AS `dispatch_status`,
+    `app_list1`.`doc_approval_sts` AS `doc_approval_sts`,
+    `app_list1`.`approved_by` AS `approved_by`,
+    `app_list1`.`ac_team_verifiy_status` AS `ac_team_verifiy_status`,
+    `app_list1`.`ac_team_approved_by` AS `ac_team_approved_by`,
+    `app_list1`.`approved_date` AS `approved_date`,
+    `app_list1`.`dc_file_name` AS `dc_file_name`,
+    `app_list1`.`file_org_name` AS `dc_file_org_name`,
+    `app_list1`.`ir_file_name` AS `ir_file_name`,
+    `app_list1`.`ir_file_org_name` AS `ir_file_org_name`,
+    `app_list1`.`file_invoice` AS `file_invoice`,
+    `app_list1`.`invoice_file_org_name` AS `invoice_file_org_name`,
+    `app_list1`.`con_contact_name` AS `con_contact_name`,
+    `app_list1`.`con_address` AS `con_address`,
+    `app_list2`.`form_main_unique_id` AS `form_main_unique_id`,
+    `app_list2`.`po_unique_id` AS `po_unique_id`,
+    `app_list2`.`file_name` AS `file_name`,
+    `app_list2`.`file_org_name` AS `po_file_original_name`
+FROM
+    (
+        `aed_elcot`.`view_doc_approval_list1` `app_list1`
+    JOIN `aed_elcot`.`view_doc_approval_list2` `app_list2`
+    ON
+        (
+            `app_list2`.`form_main_unique_id` = `app_list1`.`form_main_unique_id`
+        )
+    )
+GROUP BY
+    `app_list1`.`invoice_unique_id`

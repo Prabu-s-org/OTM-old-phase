@@ -1,0 +1,45 @@
+create view view_bill_submission_with_bg as
+SELECT
+    `bg_sub`.`form_main_unique_id` AS `form_main_unique_id`,
+    `bg_sub`.`po_num` AS `po_num`,
+    `bg_sub`.`po_date` AS `po_date`,
+    `bg_sub`.`invoice_no` AS `invoice_no`,
+    `bg_sub`.`invoice_value` AS `invoice_value`,
+    `bg_sub`.`invoice_date` AS `invoice_date`,
+    `bg_sub`.`invoice_qty` AS `invoice_qty`,
+    `bg_main`.`bg_num` AS `bg_num`,
+    `bg_sub`.`bg_auto_id` AS `bg_auto_id`,
+    `bg_main`.`bill_status` AS `bill_status`,
+    `bg_main`.`bg_date` AS `bg_date`,
+    `bg_main`.`bg_value` AS `bg_value`,
+    `sign_doc`.`claim_amount` AS `claim_amount`,
+    `po`.`proceed_bg` AS `proceed_bg`,
+    `po`.`file_name` AS `file_name`,
+    `po`.`file_org_name` AS `file_org_name`
+FROM
+    (
+        (
+            (
+                `aed_elcot`.`bg_creation_sub` `bg_sub`
+            JOIN `aed_elcot`.`po_form` `po`
+            ON
+                (
+                    `bg_sub`.`form_main_unique_id` = `po`.`unique_id`
+                )
+            )
+        JOIN `aed_elcot`.`sign_doc_verification_detail` `sign_doc`
+        ON
+            (
+                `sign_doc`.`form_main_unique_id` = `bg_sub`.`form_main_unique_id`
+            )
+        )
+    JOIN `aed_elcot`.`bg_creation_main` `bg_main`
+    ON
+        (
+            `bg_sub`.`form_main_unique_id` = `bg_main`.`form_main_unique_id`
+        )
+    )
+WHERE
+    `sign_doc`.`status_app` = '2' AND `sign_doc`.`with_bg` = 'on'
+GROUP BY
+    `bg_main`.`invoice_no`

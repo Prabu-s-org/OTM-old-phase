@@ -1,0 +1,29 @@
+create view view_bg_select_list1 as
+SELECT
+    `inv_main`.`po_num` AS `po_num`,
+    `inv_main`.`po_unique_id` AS `po_unique_id`,
+    `inv_main`.`form_main_unique_id` AS `form_main_unique_id`,
+    `inv_main`.`po_date` AS `po_date`,
+    `inv_main`.`invoice_no` AS `invoice_no`,
+    `inv_main`.`invoice_date` AS `invoice_date`,
+    `inv_main`.`ledger_name` AS `ledger_name`,
+    `inv_main`.`invoice_auto_id` AS `invoice_auto_id`,
+    `inv_main`.`executive_name` AS `executive_name`,
+    `inv_main`.`consignee_unique_id` AS `consignee_unique_id`,
+    `inv_main`.`invoice_qty` AS `invoice_qty`,
+    `inv_main`.`invoice_value` AS `invoice_value`,
+    `inv_main`.`bg_status` AS `bg_status`,
+    `aed_elcot`.`po_form`.`bank_required` AS `bank_required`,
+    `aed_elcot`.`po_form`.`bg` AS `bg_percentage`,
+    `aed_elcot`.`po_form`.`bg_month` AS `bg_month`
+FROM
+    (
+        `aed_elcot`.`invoice_creation_main` `inv_main`
+    JOIN `aed_elcot`.`po_form` ON
+        (
+            `aed_elcot`.`po_form`.`unique_id` = `inv_main`.`form_main_unique_id`
+        )
+    )
+WHERE
+    `inv_main`.`invoice_no` <> '' AND `aed_elcot`.`po_form`.`bank_required` = 'on'
+
